@@ -36,10 +36,17 @@ public class SQL {
     }
 
     public static SQL of(String sql, Object... params) {
+        StringBuilder sb = new StringBuilder();
+        int lastPos = 0;
         for (Object param : params) {
-            sql = sql.replaceFirst("\\?", param.toString());
+            int pos = sql.indexOf("?", lastPos);
+            if (pos == -1) break;
+            sb.append(sql, lastPos, pos);
+            sb.append(param.toString()); // 这里直接 append，完全不会触发 $ 报错
+            lastPos = pos + 1;
         }
-        return new SQL(sql);
+        sb.append(sql.substring(lastPos));
+        return new SQL(sb.toString());
     }
 
     public static SQL of(String sql) {
