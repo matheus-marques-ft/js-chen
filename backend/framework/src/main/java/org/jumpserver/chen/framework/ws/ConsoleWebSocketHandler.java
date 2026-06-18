@@ -70,7 +70,7 @@ public class ConsoleWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void onConnectPacket(WebSocketSession session, Packet packet) {
-        Connect connect = GSON.fromJson(packet.getData().toString(), Connect.class);
+        Connect connect = GSON.fromJson(GSON.toJson(packet.getData()), Connect.class);
         Console console = null;
         var webSess = SessionManager.getCurrentSession();
 
