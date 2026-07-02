@@ -306,6 +306,13 @@ public class QueryConsole extends AbstractConsole {
 
 
     public void onSQLFile(String filename) {
+        if (StringUtils.isBlank(filename)
+                || filename.contains("/")
+                || filename.contains("\\")
+                || filename.contains("..")) {
+            log.warn("Rejected invalid SQL file name");
+            return;
+        }
         var filePath = SessionManager.getCurrentSession().getTempPath().resolve(filename);
         var file = filePath.toFile();
 
