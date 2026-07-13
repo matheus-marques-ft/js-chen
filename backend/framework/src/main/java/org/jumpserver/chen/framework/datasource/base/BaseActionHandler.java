@@ -13,6 +13,7 @@ import org.jumpserver.chen.framework.i18n.MessageUtils;
 import org.jumpserver.chen.framework.session.SessionManager;
 import org.jumpserver.chen.framework.utils.LangUtils;
 import org.jumpserver.chen.framework.utils.TreeUtils;
+import org.jumpserver.wisp.Common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -162,7 +163,15 @@ public abstract class BaseActionHandler implements ActionHandler {
     public EventEmitter onShowObjectProperties(String type, String sql, TreeNode node) throws SQLException {
         var sqlActuator = this.getDatasource().getConnectionManager().getSqlActuator();
         var objName = TreeUtils.getValue(node.getKey(), type);
-        var result = sqlActuator.execute(SQL.of(sql, objName));
+        var command = SQL.of(sql, objName.replace("'", "''"));
+        var aclResult = SessionManager.getCurrentSession().checkACL(command.getSql());
+        if (aclResult != null && (aclResult.getRiskLevel() == Common.RiskLevel.Reject
+                || aclResult.getRiskLevel() == Common.RiskLevel.ReviewReject)) {
+            throw new SQLException("Resource action rejected by ACL");
+        }
+        var plan = sqlActuator.createPlan(command);
+        plan.setAclResult(aclResult);
+        var result = sqlActuator.executeWithAudit(plan);
 
         var detailDialog = new DetailDialog(node.getKey(), type + MessageUtils.get("Properties"));
         detailDialog.setWidth("50%");
