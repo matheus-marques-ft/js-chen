@@ -50,7 +50,7 @@ public class SQL {
             int pos = sql.indexOf("?", lastPos);
             if (pos == -1) break;
             sb.append(sql, lastPos, pos);
-            sb.append(param.toString()); // 这里直接 append，完全不会触发 $ 报错
+            sb.append(param.toString()); // Append directly here — this never triggers a $ error
             lastPos = pos + 1;
         }
         sb.append(sql.substring(lastPos));

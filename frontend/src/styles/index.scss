@@ -5,14 +5,14 @@ body {
   padding: 0 !important;
 }
 
-// 滚动条整体部分 — 默认较细，悬停时放大并高亮，便于点击
+// Scrollbar overall — thin by default, enlarges and highlights on hover for easier clicking
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
   transition: width 0.15s ease;
 }
 
-/* 当用户把鼠标移到页面或特定可滚动区域时放大滚动条，便于交互 */
+/* Enlarge the scrollbar when the user hovers over the page or a specific scrollable area, for easier interaction */
 body:hover ::-webkit-scrollbar,
 .data-view:hover ::-webkit-scrollbar,
 .hot-table:hover ::-webkit-scrollbar,
@@ -24,12 +24,12 @@ body:hover ::-webkit-scrollbar,
 ::-webkit-scrollbar-thumb {
   border-radius: 6px;
   background-color: rgba(144, 147, 153, 0.3);
-  border: 2px solid transparent; /* 防止放大时内容溢出视觉问题 */
+  border: 2px solid transparent; /* Prevents visual overflow issues when enlarged */
   background-clip: padding-box;
   transition: background-color 0.15s ease, transform 0.12s ease;
 }
 
-/* 鼠标悬停或按下时更显眼 */
+/* More visible on hover or press */
 ::-webkit-scrollbar-thumb:hover,
 ::-webkit-scrollbar-thumb:active {
   background-color: rgba(144, 147, 153, 0.6);
@@ -575,7 +575,7 @@ body:hover ::-webkit-scrollbar,
   background-color: rgba(62, 162, 223, 0.53) !important;
 }
 
-// 已注释掉，因为全局设置了滚动条样式
+// Commented out because scrollbar styles are set globally
 // .CodeMirror-hscrollbar:hover {
 //     background-color: rgba(0, 0, 0, .5);
 // }

@@ -27,7 +27,7 @@ const i18n = new VueI18n({
   dateTimeFormats: date,
   messages
 })
-locale.i18n((key, value) => i18n.t(key, value)) // 重点: 为了实现element插件的多语言切换
+locale.i18n((key, value) => i18n.t(key, value)) // Important: enables multi-language switching for the Element UI plugin
 
 Vue.prototype.$tr = (key) => {
   return i18n.t('' + key)

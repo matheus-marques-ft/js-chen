@@ -32,7 +32,7 @@ public class AuthController {
 
         var lang = getLanguage(request);
         sess.setLocale(lang);
-        // Chen token 是 bearer token；记录所属浏览器 HTTP session，供后续 WS 握手校验。
+        // Chen token is a bearer token; record the owning browser HTTP session, for later WS handshake verification.
         sess.setAttribute(SessionManager.WEB_SESSION_ID_ATTRIBUTE, request.getSession().getId());
 
         var chenToken = SessionManager.registerSession(sess);

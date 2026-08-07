@@ -253,7 +253,7 @@ export default {
       this.cm = cm
     },
     onCmChange(cm, change) {
-      // 向 luna 发送事件
+      // Send an event to luna
       bus.$emit('input-active')
 
       const { text, origin } = change[0]

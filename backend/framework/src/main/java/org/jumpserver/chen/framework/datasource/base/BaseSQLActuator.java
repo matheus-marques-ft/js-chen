@@ -209,7 +209,7 @@ public abstract class BaseSQLActuator implements SQLActuator {
                 resultSet.close();
                 result.setFetchFinishedTime(new Time(System.currentTimeMillis()));
 
-                // 数据脱敏
+                // Data masking
                 this.handleDataMasking(result);
 
                 var total = this.count(plan);
@@ -491,21 +491,21 @@ public abstract class BaseSQLActuator implements SQLActuator {
                 if (p.isEmpty()) continue;
 
                 try {
-                    // 先整体转义，避免用户写的正则符号被误解释
+                    // Escape the whole thing first, to avoid regex symbols the user wrote being misinterpreted
                     String regex = Pattern.quote(p);
-                    // 把被转义的 \* 恢复为 .*
+                    // Restore the escaped \* back to .*
                     regex = regex.replace("\\*", ".*");
-                    // 加上锚点，实现整串匹配
+                    // Add anchors to match the whole string
                     regex = "^" + regex + "$";
 
                     int flags = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
                     Pattern pa = Pattern.compile(regex, flags);
 
-                    if (pa.matcher(name).matches()) { // 注意：用 matches() 而不是 find()
+                    if (pa.matcher(name).matches()) { // Note: use matches(), not find()
                         return true;
                     }
                 } catch (PatternSyntaxException e) {
-                    // 忽略坏模式，继续下一个
+                    // Ignore bad patterns and continue to the next one
                     continue;
                 }
             }
@@ -527,14 +527,14 @@ public abstract class BaseSQLActuator implements SQLActuator {
 
         switch (method) {
             case "fixed_char":
-                // 固定字符替换
+                // Fixed character replacement
                 if (pattern.isEmpty()) {
                     return "####";
                 }
                 return pattern;
 
             case "hide_middle":
-                // 隐藏中间
+                // Hide the middle
                 if (val == null || val.length() < 3) {
                     return pattern.isEmpty() ? "####" : pattern;
                 }
@@ -543,7 +543,7 @@ public abstract class BaseSQLActuator implements SQLActuator {
                         + val.substring(val.length() - 1);
 
             case "keep_prefix":
-                // 保留前缀
+                // Keep the prefix
                 int prefix = 2;
                 if (val == null || prefix >= val.length()) {
                     return "####";
@@ -552,7 +552,7 @@ public abstract class BaseSQLActuator implements SQLActuator {
                         + "*".repeat(val.length() - prefix);
 
             case "keep_suffix":
-                // 保留后缀
+                // Keep the suffix
                 int suffix = 2;
                 if (val == null || suffix >= val.length()) {
                     return "####";
@@ -561,7 +561,7 @@ public abstract class BaseSQLActuator implements SQLActuator {
                         + val.substring(val.length() - suffix);
 
             default:
-                // 未知策略
+                // Unknown strategy
                 return pattern.isEmpty() ? "####" : pattern;
         }
     }

@@ -22,7 +22,7 @@ public class ResourceService {
             var ds = SessionManager.getCurrentSession().getDatasource();
             return ds.getChildren(node, !force);
         } catch (SQLException e) {
-            throw new ChenException(String.format("获取 %s子节点失败", node.getLabel()), e);
+            throw new ChenException(String.format("Failed to get child nodes of %s", node.getLabel()), e);
         }
     }
 
@@ -40,7 +40,7 @@ public class ResourceService {
             if (e instanceof ChenException) {
                 throw (ChenException) e;
             }
-            throw new ChenException(String.format("执行节点动作 %s 失败", node.getLabel()), e);
+            throw new ChenException(String.format("Failed to execute node action %s", node.getLabel()), e);
         }
     }
 

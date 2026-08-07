@@ -234,9 +234,9 @@ export default {
   z-index: 999;
   font-size: 14px;
   background: #383a3c;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
-  border: 1px solid rgba(0, 0, 0, 0.1); /* 添加边框样式 */
-  border-radius: 4px; /* 添加圆角 */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Add border style */
+  border-radius: 4px; /* Add rounded corners */
 }
 
 .right-menu a {

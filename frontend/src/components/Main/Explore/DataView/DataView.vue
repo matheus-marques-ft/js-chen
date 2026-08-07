@@ -93,7 +93,7 @@ export default {
             return this.state.paged
           },
           value: () => {
-            return '共 ' + this.$t('NumRow', { num: this.state.total })
+            return 'Total ' + this.$t('NumRow', { num: this.state.total })
           }
         },
         pagination: {

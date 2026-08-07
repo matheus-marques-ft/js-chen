@@ -9,12 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class SessionManager {
-    // 绑定创建 Chen 会话的 Servlet HTTP session，WS 握手时用它阻止 token 被跨浏览器重放。
+    // Bind the Servlet HTTP session that created the Chen session; used during the WS handshake to prevent the token from being replayed across browsers.
     public static final String WEB_SESSION_ID_ATTRIBUTE = "webSessionId";
     private final static SessionManager instance = new SessionManager();
     private final static ThreadLocal<String> token = new ThreadLocal<>();
     private final Map<String, Session> store = new ConcurrentHashMap<>();
-    // 每个 Chen 会话只能有一个主 /ws/session 连接，值为 WebSocket session id。
+    // Each Chen session can only have one primary /ws/session connection; the value is the WebSocket session id.
     private final Map<String, String> primaryWebSockets = new ConcurrentHashMap<>();
 
     public static String registerSession(Session session) {
@@ -60,13 +60,13 @@ public class SessionManager {
     }
 
     public static boolean claimPrimaryWebSocket(String token, String webSocketId) {
-        // 原子占用，避免并发握手同时替换当前主连接。
+        // Atomic claim, to avoid concurrent handshakes simultaneously replacing the current primary connection.
         String existing = instance.primaryWebSockets.putIfAbsent(token, webSocketId);
         return existing == null || existing.equals(webSocketId);
     }
 
     public static boolean releasePrimaryWebSocket(String token, String webSocketId) {
-        // 只允许占用者释放，防止被拒绝的重放连接关闭正常会话。
+        // Only the claimant may release it, to prevent a rejected replayed connection from closing a normal session.
         return instance.primaryWebSockets.remove(token, webSocketId);
     }
 

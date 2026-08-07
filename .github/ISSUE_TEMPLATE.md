@@ -1,20 +1,20 @@
-[简述你的问题]
+[Briefly describe your issue]
 
 
-##### 使用版本
-[请提供你使用的JumpServer版本 如 2.0.1 注: 1.4及以下版本不再提供支持]
+##### Version used
+[Please provide the JumpServer version you're using, e.g. 2.0.1. Note: versions 1.4 and below are no longer supported]
 
-##### 使用浏览器版本
-[请提供你使用的浏览器版本 如 Chrome 84.0.4147.105 ]
+##### Browser version used
+[Please provide the browser version you're using, e.g. Chrome 84.0.4147.105]
 
-##### 问题复现步骤
-1. [步骤1]
-2. [步骤2]
+##### Steps to reproduce
+1. [Step 1]
+2. [Step 2]
 
-##### 具体表现[截图可能会更好些,最好能截全]
-
-
-##### 其他
+##### Details [screenshots help, ideally full-page]
 
 
-[注:] 完成后请关闭 issue
+##### Other
+
+
+[Note:] Please close the issue once resolved

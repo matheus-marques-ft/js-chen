@@ -38,7 +38,7 @@ public class JKSGenerator {
     private Path caJksFilePath;
 
 
-    // 适用于仅校验服务器证书的情况
+    // For the case where only the server certificate is verified
     public JKSGenerator(String caCert) {
         this.caCert = caCert;
     }
@@ -47,13 +47,13 @@ public class JKSGenerator {
     public JKSGenerator() {
     }
 
-    // 适用于开启了ssl 但是不校验服务端证书的情况
+    // For the case where SSL is enabled but the server certificate is not verified
     public JKSGenerator(String clientCert, String clientKey) {
         this.clientCert = clientCert;
         this.clientKey = clientKey;
     }
 
-    // 适用于开启了ssl 并且校验服务端证书的情况
+    // For the case where SSL is enabled and the server certificate is verified
     public JKSGenerator(String caCert, String clientCert, String clientKey) {
         this.caCert = caCert;
         this.clientCert = clientCert;
@@ -62,7 +62,7 @@ public class JKSGenerator {
 
 
     private void initWorkDir() {
-        // 创建临时目录
+        // Create a temporary directory
         try {
             this.workDir = Files.createTempDirectory("jks");
         } catch (IOException e) {

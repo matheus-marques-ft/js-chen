@@ -274,7 +274,7 @@ public class PageUtils {
                 queryBlock.setTop(new SQLServerTop(new SQLNumberExpr(count)));
                 return true;
             } else {
-                // 创建 SELECT NULL 的子查询
+                // Create a SELECT NULL subquery
                 SQLSelectQueryBlock selectQueryBlock = new SQLSelectQueryBlock();
                 selectQueryBlock.addSelectItem(new SQLSelectItem(new SQLNullExpr()));
 
@@ -283,7 +283,7 @@ public class PageUtils {
 
                 SQLQueryExpr selectNullExpr = new SQLQueryExpr(selectNull);
 
-                // 使用 SELECT NULL 的子查询作为 ORDER BY 的一部分
+                // Use the SELECT NULL subquery as part of the ORDER BY
                 SQLSelectOrderByItem orderByItem = new SQLSelectOrderByItem(selectNullExpr);
                 SQLOrderBy orderByNull = new SQLOrderBy();
                 orderByNull.addItem(orderByItem);
@@ -307,7 +307,7 @@ public class PageUtils {
                 select.setQuery(queryBlock);
                 return true;
             } else {
-                // 重复上述逻辑，因为需要处理非 SQLSelectQueryBlock 的情况
+                // Repeat the logic above, since the non-SQLSelectQueryBlock case needs to be handled
                 SQLSelectQueryBlock selectQueryBlockForNonBlock = new SQLSelectQueryBlock();
                 selectQueryBlockForNonBlock.addSelectItem(new SQLSelectItem(new SQLNullExpr()));
 
@@ -429,20 +429,20 @@ public class PageUtils {
     }
 
     private static String count(SQLSelect select, DbType dbType) {
-        // 去除 ORDER BY
+        // Strip the ORDER BY
         if (select.getOrderBy() != null) {
             select.setOrderBy(null);
         }
 
         SQLSelectQuery query = select.getQuery();
-        clearOrderBy(query); // 自定义的清理嵌套子查询中的 ORDER BY 的方法
+        clearOrderBy(query); // Custom method that clears the ORDER BY in nested subqueries
 
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
             List<SQLSelectItem> selectList = queryBlock.getSelectList();
             int distinctOption = queryBlock.getDistionOption();
 
-            // 情况 1: 存在 GROUP BY，需用子查询
+            // Case 1: GROUP BY is present, a subquery is required
             if (queryBlock.getGroupBy() != null && queryBlock.getGroupBy().getItems().size() > 0) {
                 if (selectList.size() == 1 && selectList.get(0).getExpr() instanceof SQLAllColumnExpr) {
                     selectList.clear();
@@ -451,37 +451,37 @@ public class PageUtils {
                 return createCountUseSubQuery(select, dbType);
             }
 
-            // 情况 2: DISTINCT 情况下，Oracle 特别处理
+            // Case 2: special handling for Oracle in the DISTINCT case
             if (distinctOption == SQLSetQuantifier.DISTINCT) {
                 if (dbType == DbType.oracle && (
                         selectList.size() > 1 ||
                                 (selectList.size() == 1 && selectList.get(0).getExpr() instanceof SQLAllColumnExpr)
                 )) {
-                    // SELECT DISTINCT * 或多字段，Oracle 不支持直接 count(distinct ...)
+                    // SELECT DISTINCT * or multiple fields — Oracle doesn't support count(distinct ...) directly
                     return createCountUseSubQuery(select, dbType);
                 } else {
-                    // 只有一个字段，Oracle 支持 count(distinct col)
+                    // Only a single field — Oracle supports count(distinct col)
                     SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
                     for (SQLSelectItem item : selectList) {
                         countExpr.addArgument(item.getExpr());
                     }
                     selectList.clear();
-                    queryBlock.setDistionOption(0); // 去除 DISTINCT
+                    queryBlock.setDistionOption(0); // Strip DISTINCT
                     queryBlock.addSelectItem(countExpr);
                     return SQLUtils.toSQLString(select, dbType);
                 }
             }
 
-            // 情况 3: 非 DISTINCT，无 GROUP BY，直接 count(*)
+            // Case 3: not DISTINCT, no GROUP BY — use count(*) directly
             selectList.clear();
             selectList.add(createCountItem(dbType));
             return SQLUtils.toSQLString(select, dbType);
 
         } else if (query instanceof SQLUnionQuery) {
-            // UNION 情况统一使用子查询
+            // Always use a subquery for the UNION case
             return createCountUseSubQuery(select, dbType);
         } else {
-            throw new IllegalStateException("不支持的 SQL 查询类型: " + query.getClass().getName());
+            throw new IllegalStateException("Unsupported SQL query type: " + query.getClass().getName());
         }
     }
 

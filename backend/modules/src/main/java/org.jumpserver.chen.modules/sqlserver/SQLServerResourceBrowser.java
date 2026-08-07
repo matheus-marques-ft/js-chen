@@ -56,7 +56,7 @@ public class SQLServerResourceBrowser extends BaseResourceBrowser {
                 .getObjects(sql.getSql(), Database.class, Map.of("name", 1));
     }
 
-    // 查询当前数据库下所有的schema
+    // Query all schemas under the current database
     private static final String SQL_GET_SCHEMAS = "SELECT schema_name FROM INFORMATION_SCHEMA.SCHEMATA";
 
     @Override

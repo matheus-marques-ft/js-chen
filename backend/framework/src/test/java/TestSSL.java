@@ -16,19 +16,19 @@ import java.util.List;
 public class TestSSL {
 
     public static void main(String[] args) throws Exception {
-        // 加入 BouncyCastle 作为安全提供者
+        // Register BouncyCastle as a security provider
         java.security.Security.addProvider(new BouncyCastleProvider());
 
-        // 从 PEM 文件中读取 CA 证书
+        // Read the CA certificate from the PEM file
         Certificate caCert = CertificateFactory.getInstance("X.509")
                 .generateCertificate(new FileInputStream("/Users/shenchenyang/Desktop/mysql-ssl/cert/ca.pem"));
 
-        // 从 PEM 文件中读取客户端证书
+        // Read the client certificate from the PEM file
         Certificate clientCert = CertificateFactory.getInstance("X.509")
                 .generateCertificate(new FileInputStream("/Users/shenchenyang/Desktop/mysql-ssl/cert/client-cert.pem"));
 
 
-        // 从 PEM 文件中读取私钥
+        // Read the private key from the PEM file
         PEMParser pemParser = new PEMParser(new FileReader("/Users/shenchenyang/Desktop/mysql-ssl/cert/client-key.pem"));
 
         Object object = pemParser.readObject();
@@ -45,17 +45,17 @@ public class TestSSL {
             throw new IllegalArgumentException("Unsupported object type: " + object.getClass().getName());
         }
 
-        // 创建 JKS 密钥库实例
+        // Create a JKS keystore instance
         KeyStore keyStore = KeyStore.getInstance("JKS");
         keyStore.load(null, null);
 
-        // 将私钥和证书导入到密钥库
+        // Import the private key and certificate into the keystore
         List<Certificate> certChain = new ArrayList<>();
         certChain.add(clientCert);
         certChain.add(caCert);
         keyStore.setKeyEntry("clientalias", privateKey, "123456".toCharArray(), certChain.toArray(new Certificate[0]));
 
-        // 保存为 JKS 文件
+        // Save as a JKS file
         try (java.io.FileOutputStream fos = new java.io.FileOutputStream("/Users/shenchenyang/Desktop/mysql-ssl/cert/client-keystore.jks")) {
             keyStore.store(fos, "123456".toCharArray());
         }

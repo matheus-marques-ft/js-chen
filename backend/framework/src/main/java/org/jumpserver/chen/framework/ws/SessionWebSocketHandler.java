@@ -30,7 +30,7 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
         }
 
         var token = (String) session.getAttributes().get("token");
-        // 拒绝第二个主会话，避免重放连接替换 PacketIO 并在关闭时终止原会话。
+        // Reject a second primary session, to prevent a replayed connection from replacing the PacketIO and terminating the original session on close.
         if (!SessionManager.claimPrimaryWebSocket(token, session.getId())) {
             log.warn("Reject duplicate primary WebSocket connection");
             session.close(CloseStatus.POLICY_VIOLATION);
@@ -103,7 +103,7 @@ public class SessionWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         var token = (String) session.getAttributes().get("token");
-        // 被拒绝的连接没有占用主会话，不得影响当前仍在线的用户。
+        // A rejected connection never claimed the primary session, so it must not affect the user currently online.
         if (!SessionManager.releasePrimaryWebSocket(token, session.getId())) {
             return;
         }

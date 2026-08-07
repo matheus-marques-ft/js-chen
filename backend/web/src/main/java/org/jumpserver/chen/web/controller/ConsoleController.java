@@ -26,14 +26,14 @@ public class ConsoleController {
         if (!SessionManager.getCurrentSession().canDownload()) {
             throw new ChenException(MessageUtils.get("NoPermissionError"));
         }
-        // export 文件名只能是单个文件名，先拒绝跨平台的路径分隔符和遍历片段。
+        // The export filename must be a single filename; reject cross-platform path separators and traversal segments first.
         if (fileKey == null || fileKey.isBlank()
                 || fileKey.contains("/") || fileKey.contains("\\") || fileKey.contains("..")) {
             throw new ChenException("Invalid export file");
         }
         var basePath = SessionManager.getCurrentSession().getTempPath().toAbsolutePath().normalize();
         var filePath = basePath.resolve(fileKey).normalize();
-        // normalize 后仍须落在会话目录内，且禁止末级符号链接指向目录外文件。
+        // After normalization it must still fall within the session directory, and the final symlink must not point outside it.
         if (!filePath.startsWith(basePath) || !Files.isRegularFile(filePath, LinkOption.NOFOLLOW_LINKS)) {
             throw new ChenException("Invalid export file");
         }

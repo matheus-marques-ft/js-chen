@@ -371,7 +371,7 @@ public class QueryConsole extends AbstractConsole {
                     this.getState().setInQuery(false);
                     this.stateManager.commit();
 
-                    this.getConsoleLogger().error("获取结果失败!");
+                    this.getConsoleLogger().error("Failed to get result!");
                 } finally {
                     SessionManager.getCurrentSession().getController().closeDialog();
                 }

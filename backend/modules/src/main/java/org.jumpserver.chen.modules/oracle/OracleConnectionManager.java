@@ -51,8 +51,8 @@ public class OracleConnectionManager extends BaseConnectionManager {
 
         CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(f1, f2);
         try {
-            combinedFuture.get(); // 等待所有Future完成
-            // 判断哪个Future成功完成，并设置jdbcUrl
+            combinedFuture.get(); // Wait for all Futures to complete
+            // Determine which Future completed successfully, and set jdbcUrl
             var sidAttempt = f1.get();
             var serviceNameAttempt = f2.get();
             this.jdbcUrl = sidAttempt.jdbcUrl() != null ? sidAttempt.jdbcUrl() : serviceNameAttempt.jdbcUrl();
@@ -62,7 +62,7 @@ public class OracleConnectionManager extends BaseConnectionManager {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Error occurred while pinging database", e);
         } finally {
-            pool.shutdown(); // 不要忘记关闭线程池
+            pool.shutdown(); // Don't forget to shut down the thread pool
         }
     }
 

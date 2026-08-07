@@ -31,7 +31,7 @@ public class WebSocketConfig {
     public ServletServerContainerFactoryBean createWebSocketContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
         container.setMaxTextMessageBufferSize(1024 * 1024);
-        // 可选：异步发送超时
+        // Optional: async send timeout
         // container.setAsyncSendTimeout(20_000L);
         return container;
     }
@@ -45,7 +45,7 @@ public class WebSocketConfig {
         handlers.put("/ws/db-console", createRequestHandler(new DBConsoleWebsocketHandler()));
 
         var mapping = new WebSocketHandlerMapping();
-        // 与 Spring 默认 WebSocket 映射一致，确保 WS 请求优先于普通 MVC 映射处理。
+        // Matches Spring's default WebSocket mapping, ensuring WS requests are handled before regular MVC mappings.
         mapping.setOrder(1);
         mapping.setUrlMap(handlers);
         return mapping;
@@ -53,12 +53,12 @@ public class WebSocketConfig {
 
     private WebSocketHttpRequestHandler createRequestHandler(WebSocketHandler webSocketHandler) {
         var requestHandler = new WebSocketHttpRequestHandler(webSocketHandler);
-        // 仅使用 Chen 的动态校验，避免 WebSocketHandlerRegistry 追加第二个 Origin 拦截器。
+        // Only use Chen's dynamic validation, to avoid WebSocketHandlerRegistry appending a second Origin interceptor.
         requestHandler.setHandshakeInterceptors(List.of(new ServletWebSocketHandshakeInterceptor()));
         return requestHandler;
     }
 
-    // 仅用于跨 Host 请求的精确白名单，格式为逗号分隔的 host 或 host:port。
+    // Exact allowlist used only for cross-host requests, formatted as a comma-separated list of host or host:port.
     private static final Set<String> TRUSTED_DOMAINS =
             Arrays.stream(
                             Optional.ofNullable(System.getenv("DOMAINS"))
@@ -93,12 +93,12 @@ public class WebSocketConfig {
             String normalizedRequestHost = requestHost == null
                     ? null
                     : normalizeHost(requestHost.getHostString());
-            // 仅比较 Host，兼容 TLS 在代理终止后转发到 Chen 内部端口的场景。
+            // Compare only the Host, to support the scenario where TLS is terminated at a proxy and forwarded to Chen's internal port.
             if (originHost.equals(normalizedRequestHost)) {
                 return true;
             }
 
-            // 本机访问直接放行
+            // Allow localhost access through directly
             if (isLocalhost(originHost)) {
                 return true;
             }
@@ -111,7 +111,7 @@ public class WebSocketConfig {
     }
 
     private static boolean matchesTrustedDomains(URI origin, String originHost, Set<String> trustedDomains) {
-        // 跨 Host 请求必须精确匹配 DOMAINS，禁止使用后缀或子串匹配。
+        // Cross-host requests must match DOMAINS exactly; suffix or substring matching is not allowed.
         if (containsIgnoreCase(trustedDomains, originHost)) {
             return true;
         }
@@ -156,7 +156,7 @@ public class WebSocketConfig {
 
             String origin = request.getHeaders().getOrigin();
             InetSocketAddress requestHost = request.getHeaders().getHost();
-            // 某些 Servlet 请求对象未填充 Host header，回退到容器解析到的主机和端口。
+            // Some Servlet request objects don't populate the Host header; fall back to the host and port resolved by the container.
             if (requestHost == null && request instanceof ServletServerHttpRequest servletRequest) {
                 requestHost = new InetSocketAddress(
                         servletRequest.getServletRequest().getServerName(),
@@ -170,7 +170,7 @@ public class WebSocketConfig {
             }
 
             var protocols = request.getHeaders().get("Sec-WebSocket-Protocol");
-            // 拒绝缺失子协议的异常握手，避免读取空列表导致 NPE。
+            // Reject abnormal handshakes missing a subprotocol, to avoid an NPE from reading an empty list.
             if (protocols == null || protocols.isEmpty()) {
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
                 return false;
@@ -183,9 +183,9 @@ public class WebSocketConfig {
             var httpSession = servletRequest == null ? null : servletRequest.getSession(false);
             var sessionBound = session != null && httpSession != null && Objects.equals(
                     session.getAttribute(SessionManager.WEB_SESSION_ID_ATTRIBUTE), httpSession.getId());
-            // token 必须仍存活，且必须来自创建它的同一浏览器 HTTP session。
+            // The token must still be alive, and must come from the same browser HTTP session that created it.
             if (!sessionBound) {
-                // 仅输出校验维度，不记录 token、Cookie 或 HTTP session ID 等敏感信息。
+                // Only log the validation dimensions; don't log sensitive info such as the token, cookie, or HTTP session ID.
                 log.warn("Reject WebSocket handshake: tokenExists={}, httpSessionExists={}, sessionBound={}",
                         session != null, httpSession != null, sessionBound);
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -199,7 +199,7 @@ public class WebSocketConfig {
 
         @Override
         public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
-            //握手之后
+            // After the handshake
         }
     }
 }

@@ -83,7 +83,7 @@ public interface Session {
 
     void close(String message, Object... args);
 
-    // 在有审计的情况下执行命令
+    // Execute a command with auditing
     SQLQueryResult withAudit(String command, QueryAuditFunction queryAuditFunction) throws SQLException, CommandRejectException;
 
     void recordCommand(String command);

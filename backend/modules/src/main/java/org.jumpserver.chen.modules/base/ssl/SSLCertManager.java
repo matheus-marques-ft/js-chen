@@ -15,18 +15,18 @@ import java.util.Base64;
 public class SSLCertManager {
 
     @Setter
-    private String caCert;          // CA 证书
+    private String caCert;          // CA certificate
     @Setter
-    private String clientCertKey;   // 客户端私钥 (PEM 格式)
+    private String clientCertKey;   // Client private key (PEM format)
     @Setter
-    private String clientCert;      // 客户端证书
+    private String clientCert;      // Client certificate
 
 
     private File caCertFile;
     private File clientCertKeyFile;
     private File clientCertFile;
 
-    // 获取 CA 证书的路径
+    // Get the path to the CA certificate
     public String getCaCertPath() throws IOException {
         if (StringUtils.isEmpty(caCert)) {
             return null;
@@ -38,20 +38,20 @@ public class SSLCertManager {
         return caCertFile.getAbsolutePath();
     }
 
-    // 获取客户端私钥的路径，并将 PEM 格式的私钥转换为 DER 格式
+    // Get the path to the client private key, converting it from PEM format to DER format
     public String getClientCertKeyPath() throws Exception {
         if (StringUtils.isEmpty(clientCertKey)) {
             return null;
         }
 
         if (clientCertKeyFile == null) {
-            // 检查 clientCertKey 是否是 PEM 格式并转换为 DER
+            // Check whether clientCertKey is in PEM format and convert it to DER
             clientCertKeyFile = createTempFile("client-cert-key", convertPEMToDER(clientCertKey));
         }
         return clientCertKeyFile.getAbsolutePath();
     }
 
-    // 获取客户端证书的路径
+    // Get the path to the client certificate
     public String getClientCertPath() throws IOException {
 
         if (StringUtils.isEmpty(clientCert)) {
@@ -64,32 +64,32 @@ public class SSLCertManager {
         return clientCertFile.getAbsolutePath();
     }
 
-    // 销毁资源，如果 autoDestroy 为 true，则删除临时文件
+    // Destroy resources; delete temp files if autoDestroy is true
     public void Destroy() {
         deleteTempFile(caCertFile);
         deleteTempFile(clientCertKeyFile);
         deleteTempFile(clientCertFile);
     }
 
-    // 辅助方法：创建临时文件并写入内容
+    // Helper method: create a temp file and write content to it
     private File createTempFile(String prefix, byte[] content) throws IOException {
         File tempFile = File.createTempFile(prefix, ".der");
-        Files.write(tempFile.toPath(), content);  // 直接写入二进制数据
-        tempFile.deleteOnExit(); // JVM 退出时自动删除
+        Files.write(tempFile.toPath(), content);  // Write binary data directly
+        tempFile.deleteOnExit(); // Automatically deleted when the JVM exits
         return tempFile;
     }
 
-    // 辅助方法：创建临时文件并写入内容（用于普通字符串内容）
+    // Helper method: create a temp file and write content to it (for plain string content)
     private File createTempFile(String prefix, String content) throws IOException {
         File tempFile = File.createTempFile(prefix, ".pem");
         try (FileWriter writer = new FileWriter(tempFile)) {
             writer.write(content);
         }
-        tempFile.deleteOnExit(); // JVM 退出时自动删除
+        tempFile.deleteOnExit(); // Automatically deleted when the JVM exits
         return tempFile;
     }
 
-    // 辅助方法：删除临时文件
+    // Helper method: delete a temp file
     private void deleteTempFile(File file) {
         if (file != null && file.exists()) {
             try {
@@ -101,22 +101,22 @@ public class SSLCertManager {
         }
     }
 
-    // 将 PEM 格式的私钥转换为 DER 格式
+    // Convert a private key from PEM format to DER format
     private byte[] convertPEMToDER(String pemContent) throws Exception {
-        // 去掉 PEM 格式的头尾标记，获取 Base64 编码内容
+        // Strip the PEM header/footer markers to get the Base64-encoded content
         pemContent = pemContent.replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s+", "");  // 去掉空格和换行符
+                .replaceAll("\\s+", "");  // Strip whitespace and newlines
 
-        // Base64 解码
+        // Base64 decode
         byte[] keyBytes = Base64.getDecoder().decode(pemContent);
 
-        // 使用 PKCS8EncodedKeySpec 来生成 PrivateKey 对象
+        // Use PKCS8EncodedKeySpec to generate the PrivateKey object
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");  // 假设是 RSA 私钥
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");  // Assume an RSA private key
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
 
-        // 返回 DER 格式的私钥字节数组
+        // Return the private key byte array in DER format
         return privateKey.getEncoded();
     }
 }

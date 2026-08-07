@@ -10,15 +10,15 @@ public class SessionInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) throws Exception {
-        //0. 如果是登录请求，直接放行
+        //0. If this is a login request, allow it through directly
         if (!req.getServletPath().startsWith("/api") || req.getServletPath().equals("/api/auth")) {
             return true;
         }
-        //1. 从header 中获取 token
+        //1. Get the token from the header
         String token = req.getHeader("token");
-        //2. 判断 token 是否认证
+        //2. Check whether the token is authenticated
         if (token == null || token.isEmpty() || SessionManager.getSession(token) == null || !SessionManager.getSession(token).isActive()) {
-            //2.1 认证失败，返回错误信息
+            //2.1 Authentication failed, return an error message
             resp.setStatus(401);
             resp.getWriter().write("Unauthorized");
             return false;

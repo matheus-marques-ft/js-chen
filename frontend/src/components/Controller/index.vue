@@ -90,7 +90,7 @@ export default {
     auth() {
       const params = getUrlParams(window.location.href)
       if (!Object.hasOwn(params, 'token')) {
-        // 提示没有 token
+        // Notify that no token was found
         this.dialogOptions.title = 'Error'
         this.dialogOptions.body = 'No token found in url'
         this.dialogOptions.showClose = false

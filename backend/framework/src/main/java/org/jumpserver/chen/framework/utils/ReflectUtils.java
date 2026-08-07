@@ -20,7 +20,7 @@ public class ReflectUtils {
 
 
 
-    // 查找此属性的 setter 方法 并设置值
+    // Find the setter method for this property and set the value
     public static void setFieldValue(Object obj, String fieldName, Object value) {
         Class<?> clazz = obj.getClass();
         String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);

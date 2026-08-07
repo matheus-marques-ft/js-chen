@@ -23,18 +23,18 @@ public class TestDruid {
         if (tokens.length == 0) {
             return;
         }
-        // 获取最后一个 token
+        // Get the last token
         var lastToken = tokens[tokens.length - 1];
 
         if (lastToken.endsWith(".")) {
             var tableName = lastToken.substring(0, lastToken.length() - 1);
-            // 获取表中的字段
+            // Get the fields in the table
             var fields = tables.get(tableName);
             if (fields != null) {
                 suggestions.addAll(fields);
             }
         } else {
-            // 从 keywords 中获取匹配的关键字
+            // Get the matching keyword from keywords
             for (var keyword : keywords) {
                 if (keyword.startsWith(lastToken)) {
                     suggestions.add(keyword);

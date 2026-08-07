@@ -28,16 +28,16 @@ public class TestMysqlDriver {
             properties.setProperty("useSSL", "true");
 
 
-            // 校验客户端证书, 如果有这个选项则需要CA
+            // Validate the client certificate; a CA is required if this option is set
             properties.setProperty("verifyServerCertificate", "true");
 
-            // 客户端证书，当要求 必须ssl 的时候必须传递
+            // Client certificate; required when SSL is mandatory
             properties.setProperty("clientCertificateKeyStoreUrl", "file:/var/folders/3w/jyp02p1n57zfkvr5wwxmw9nc0000gn/T/jks17552071077163108422/client.jks");
             properties.setProperty("clientCertificateKeyStorePassword", JKSGenerator.JSK_PASS);
             properties.setProperty("clientKeyPassword", JKSGenerator.JSK_PASS);
 
 
-            // ca 证书 verifyServerCertificate 为 true 时 必须传递
+            // CA certificate; required when verifyServerCertificate is true
             properties.setProperty("trustCertificateKeyStoreUrl", "file:/var/folders/3w/jyp02p1n57zfkvr5wwxmw9nc0000gn/T/jks17552071077163108422/ca.jks");
             properties.setProperty("trustCertificateKeyStorePassword", JKSGenerator.JSK_PASS);
 

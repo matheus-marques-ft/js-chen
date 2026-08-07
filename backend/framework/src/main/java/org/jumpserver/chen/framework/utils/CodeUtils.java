@@ -4,15 +4,15 @@ package org.jumpserver.chen.framework.utils;
 public class CodeUtils {
 
     /**
-     * 对导出文件的换行符进行转义
+     * Escape newline characters for the exported file
      * @param value
      * @return
      */
     public static String escapeCsvValue(String value) {
         if (value.contains("\"") || value.contains(",") || value.contains("\n")) {
-            // 对引号进行转义
+            // Escape quotes
             value = value.replace("\"", "\"\"");
-            // 用引号包围值
+            // Wrap the value in quotes
             value = "\"" + value + "\"";
         }
         return value;
