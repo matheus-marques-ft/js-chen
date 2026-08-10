@@ -1,4 +1,4 @@
-FROM ghcr.io/matheus-marques-ft/chen-base:20260810_173311 AS stage-build
+FROM ghcr.io/matheus-marques-ft/chen-base:20260810_184527 AS stage-build
 ENV LANG=en_US.UTF-8
 
 WORKDIR /opt/chen/
