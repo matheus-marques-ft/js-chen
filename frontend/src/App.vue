@@ -22,13 +22,21 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('./assets/fonts/InstrumentSans-Variable.ttf') format('truetype-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 html, body {
   height: 100%;
   overflow: hidden;
 }
 
 #app {
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
